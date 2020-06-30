@@ -23,6 +23,6 @@ class GuessedCards extends GuessingCard {
 
   @override
   Widget build(BuildContext context) {
-    return flipCardChild(numberSide, this.color);
+    return flipCardChild(numberSide, this.color.withOpacity(.4));
   }
 }

@@ -25,7 +25,6 @@ class _GameWindow extends State<StatefulWidget> {
   Random random;
   List<PlayCard> cards;
   int currentOpenCardIndex = -1;
-  bool gameFinished = false;
   List<int> openedCards = [];
 
   cardsOnPress(int index) {
@@ -57,8 +56,8 @@ class _GameWindow extends State<StatefulWidget> {
         cards = newCards;
       });
     }
-    if (this.openedCards.length == size * size) {
-      gameHasFinished();
+    if (this.openedCards.length == totalCards) {
+      _confettiController.play();
       return;
     }
 
@@ -71,11 +70,12 @@ class _GameWindow extends State<StatefulWidget> {
     return (size * 2) - this.openedCards.length;
   }
 
-  void gameHasFinished() {
-    _confettiController.play();
-    this.setState(() {
-      gameFinished = true;
-    });
+  bool get gameHasFinished {
+    return this.openedCards.length == totalCards;
+  }
+
+  int get totalCards {
+    return size * size;
   }
 
   @override
@@ -84,17 +84,21 @@ class _GameWindow extends State<StatefulWidget> {
     super.dispose();
   }
 
+  void reset() {
+    this._confettiController.stop();
+    this.setState(() => {
+          cards = this.getCards(size),
+          openedCards = [],
+          currentOpenCardIndex = -1,
+        });
+  }
+
   Widget get resetButton {
-    if (!gameFinished) {
+    if (!gameHasFinished) {
       return Container();
     }
     return RaisedButton(
-      onPressed: () {
-        this._confettiController.stop();
-        this.setState(() => {
-              cards = this.getCards(size),
-            });
-      },
+      onPressed: reset,
       color: Colors.cyan,
       textColor: Colors.white,
       child: const Text('Start Over', style: TextStyle(fontSize: 20)),
