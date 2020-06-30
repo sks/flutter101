@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter101/guessing_card.dart';
+import './guessing_card.dart';
 
 abstract class PlayCard extends Widget {
   int getNumber();

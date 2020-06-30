@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter101/game_window.dart';
+import './components/game/game_window.dart';
 
 main() => runApp(MyApp());
 

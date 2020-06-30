@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter101/cards.dart';
-import 'package:flutter101/guessing_card.dart';
+import './cards.dart';
+import './guessing_card.dart';
 
 const double spacing = 10;
 
@@ -26,6 +26,7 @@ class _GameWindow extends State<StatefulWidget> {
   List<PlayCard> cards;
   int currentOpenCardIndex = -1;
   List<int> openedCards = [];
+  int tries = 0;
 
   cardsOnPress(int index) {
     if (openedCards.contains(index)) {
@@ -37,6 +38,9 @@ class _GameWindow extends State<StatefulWidget> {
       });
       return;
     }
+    this.setState(() {
+      ++tries;
+    });
     PlayCard currentOpenCard = this.cards.elementAt(currentOpenCardIndex);
     PlayCard newCardOpen = this.cards.elementAt(index);
     if (currentOpenCardIndex == index ||
@@ -67,7 +71,7 @@ class _GameWindow extends State<StatefulWidget> {
   }
 
   int get cardsLeft {
-    return (size * 2) - this.openedCards.length;
+    return totalCards - this.openedCards.length;
   }
 
   bool get gameHasFinished {
@@ -90,6 +94,7 @@ class _GameWindow extends State<StatefulWidget> {
           cards = this.getCards(size),
           openedCards = [],
           currentOpenCardIndex = -1,
+          tries = 0,
         });
   }
 
@@ -97,11 +102,11 @@ class _GameWindow extends State<StatefulWidget> {
     if (!gameHasFinished) {
       return Container();
     }
-    return RaisedButton(
+    return IconButton(
+      icon: Icon(Icons.refresh),
+      tooltip: 'Start Over',
       onPressed: reset,
       color: Colors.cyan,
-      textColor: Colors.white,
-      child: const Text('Start Over', style: TextStyle(fontSize: 20)),
     );
   }
 
@@ -150,6 +155,7 @@ class _GameWindow extends State<StatefulWidget> {
             children: cards,
           ),
         ),
+        resetButton,
         ConfettiWidget(
           confettiController: _confettiController,
           blastDirectionality: BlastDirectionality.explosive,
@@ -158,8 +164,8 @@ class _GameWindow extends State<StatefulWidget> {
           emissionFrequency: .05,
           numberOfParticles: this.size,
         ),
-        resetButton,
-        Text("Total Cards left: " + cardsLeft.toString()),
+        Text("Tries: " + tries.toString()),
+        Text("Cards left: " + cardsLeft.toString()),
       ],
     );
   }
